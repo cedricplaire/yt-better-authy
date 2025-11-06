@@ -14,7 +14,7 @@ export function normalizeName(name: string) {
 }
 
 export function getValidDomains() {
-  const domains = ["gmail.com", "yahoo.com", "outlook.com", "free.fr", "sfr.fr", "minitel.net", "orange.fr", "bouygue.fr"];
+  const domains = ["gmail.com", "gmail.fr", "yahoo.com", "outlook.com"];
 
   if (process.env.NODE_ENV === "development") {
     domains.push("example.com");

@@ -23,7 +23,15 @@ export const GetStartedButton = () => {
         <Link href={href}>Get Started</Link>
       </Button>
 
-      {session && <p>Welcome back, {session.user.name}! 👋</p>}
+      {session && (
+        <p className="flex items-center">
+          <span
+            data-role={session.user.role}
+            className="size-6 mr-1 rounded-full animate-pulse data-[ROLE=USER]:bg-blue-500 data-[ROLE=ADMIN]:bg-green-500"
+          />
+          Welcome back, {session.user.name}! ‧₊˚♪ 𝄞₊˚⊹
+        </p>
+      )}
     </div>
   );
 };

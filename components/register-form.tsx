@@ -21,9 +21,9 @@ export default function RegisterForm() {
       setIsPending(false);
     } else {
       toast.success(
-        "Registration complete, Please verify your email for validation link"
+        "Registration complete, Please verify your email."
       );
-      router.push("/dashboard/auth/login");
+      router.push("/dashboard/auth/register/success");
     }
     
     setIsPending(false);

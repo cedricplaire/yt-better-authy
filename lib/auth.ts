@@ -5,11 +5,25 @@ import prisma from "@/lib/prisma"
 import { hashPassword, verifyPassword } from "@/lib/argon2";
 import { getValidDomains, normalizeName } from "./utils";
 import { createAuthMiddleware, APIError } from "better-auth/api";
+import { UserRole } from "./generated/prisma/enums";
+import { ac, roles } from "@/lib/permissions"
+import { admin } from "better-auth/plugins/admin";
+import { SendEmailAction } from "@/actions/send-email-action";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  socialProviders: {
+    google: {
+      clientId: String(process.env.GOOGLE_CLIENT_ID),
+      clientSecret: String(process.env.GOOGLE_CLIENT_SECRET),
+    },
+    github: {
+      clientId: String(process.env.GITHUB_ID),
+      clientSecret: String(process.env.GITHUB_SECRET),
+    },
+  },
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 6,
@@ -17,6 +31,34 @@ export const auth = betterAuth({
     password: {
       hash: hashPassword,
       verify: verifyPassword,
+    },
+    requireEmailVerification: true,
+    sendResetPassword: async ({ user, url }) => {
+      await SendEmailAction({
+        to: user.email,
+        subject: "reset your password",
+        meta: {
+          description: "Please click the link below to reset your password",
+          link: url,
+        },
+      });
+    },
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    expiresIn: 60 * 60,
+    autoSignInAfterVerification: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      const link = new URL(url);
+
+      await SendEmailAction({
+        to: user.email,
+        subject: "Verify your email address",
+        meta: {
+          description: "Verify your Email Address to complete registration",
+          link: String(link),
+        },
+      });
     },
   },
   hooks: {
@@ -42,39 +84,53 @@ export const auth = betterAuth({
           },
         };
       }
-      if (ctx.path === "/sign-in/magic-link") {
-        return {
-          context: {
-            ...ctx,
-            body: {
-              ...ctx.body,
-              name: normalizeName(ctx.body.name),
-            },
-          },
-        };
-      }
-      if (ctx.path === "/update-user") {
-        return {
-          context: {
-            ...ctx,
-            body: {
-              ...ctx.body,
-              name: normalizeName(ctx.body.name),
-            },
-          },
-        };
-      }
     }),
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          const ADMIN_EMAILS = process.env.ADMIN_EMAILS?.split(";") ?? [];
+
+          if (ADMIN_EMAILS.includes(user.email)) {
+            return { data: { ...user, role: UserRole.ADMIN } };
+          }
+
+          return { data: user };
+        },
+      },
+    },
+  },
+  user: {
+    additionalFields: {
+      role: {
+        type: ["USER", "ADMIN"] as Array<UserRole>,
+        input: false,
+      },
+    },
   },
   session: {
     expiresIn: 30 * 24 * 60 * 60,
+  },
+  account: {
+    accountLinking: {
+      enabled: false,
+    },
   },
   advanced: {
     database: {
       generateId: false,
     },
   },
-  plugins: [nextCookies()],
+  plugins: [
+    nextCookies(),
+    admin({
+      defaultRole: UserRole.USER,
+      adminRoles: [UserRole.ADMIN],
+      ac,
+      roles,
+    }),
+  ],
 });
 
 export type ErrorCode = keyof typeof auth.$ERROR_CODES | "UNKNOWN";

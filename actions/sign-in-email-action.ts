@@ -18,7 +18,7 @@ export async function SignInEmailAction(formData: FormData) {
         email,
         password,
       },
-      asResponse: true,
+      //asResponse: true,
     });
 
     // old way - without better-auth plugins: nextCookies
