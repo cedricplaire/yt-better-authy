@@ -32,6 +32,7 @@ export const GetStartedButton = () => {
           Welcome back, {session.user.name}! ‧₊˚♪ 𝄞₊˚⊹
         </p>
       )}
+
     </div>
   );
 };

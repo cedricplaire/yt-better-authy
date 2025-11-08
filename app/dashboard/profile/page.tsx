@@ -1,7 +1,9 @@
+import { ChangePasswordForm } from "@/components/change-password-form";
 import { HeaderBread } from "@/components/header-breadcrum";
 import { ReturnButton } from "@/components/return-button";
 import { SignOutButton } from "@/components/sign-out-button";
 import { Button } from "@/components/ui/button";
+import { UpdateUserForm } from "@/components/update-user-form";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import Link from "next/link";
@@ -30,7 +32,7 @@ export default async function Page() {
       <HeaderBread />
       <div className="px-8 py-16 container mx-auto max-w-5xl space-y-8">
         <div className="space-y-4">
-          <ReturnButton href="/" label="Home" />
+          <ReturnButton href="/dashboard" label="Home" />
           <h1 className="text-3xl font-bold">Profile</h1>
         </div>
 
@@ -44,9 +46,11 @@ export default async function Page() {
         </div>
         <div className="text-2xl font-bold">Permissions</div>
         <div className="space-x-4">
-          <Button size={"sm"}>Manage Own Posts</Button>
+          <Button size={"sm"}>
+            <Link href={"/dashboard/posts/"}>Manage own Posts</Link>
+          </Button>
           <Button disabled={!FULL_PAGE_ACCESS.success} size={"sm"}>
-            Manage All Posts
+            <Link href={"/dashboard/posts/admin"}>Manage All Posts</Link>
           </Button>
         </div>
 
@@ -71,6 +75,18 @@ export default async function Page() {
         <pre className="text-sm overflow-clip">
           {JSON.stringify(session, null, 2)}
         </pre>
+
+        <div className="space-y-4 p-4 rounded-b-md border border-t-8 border-blue-600">
+          <h2 className="text-2xl font-bold">Update User</h2>
+          <UpdateUserForm
+            name={session.user.name}
+            image={session.user.image ?? ""}
+          />
+        </div>
+        <div className="space-y-4 p-4 rounded-b-md border border-t-8 border-red-600">
+          <h2 className="text-2xl font-bold">Change Password</h2>
+          <ChangePasswordForm />
+        </div>
       </div>
     </>
   );
