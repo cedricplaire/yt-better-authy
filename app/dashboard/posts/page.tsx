@@ -1,4 +1,4 @@
-import { HeaderBread } from '@/components/header-breadcrum';
+import { HeaderBread } from "@/components/header-breadcrum";
 import React from "react";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
@@ -6,11 +6,18 @@ import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ReturnButton } from "@/components/return-button";
 import Link from "next/link";
-import { fetchPostPagination, fetchPostsPage, threeLatestPost } from "@/data/posts-data";
+import {
+  fetchPostPagination,
+  fetchPostsPage,
+  threeLatestPost,
+} from "@/data/posts-data";
 import Pagination from "@/components/pagination";
-import { ReadPostButton } from '@/components/posts/read-post-button';
-import { EditPostButton, PlaceHolderEditPostButton } from '@/components/posts/edit-post-button';
-
+import { ReadPostButton } from "@/components/posts/read-post-button";
+import {
+  EditPostButton,
+  PlaceHolderEditPostButton,
+} from "@/components/posts/edit-post-button";
+import { PostCategory } from "@/lib/generated/prisma/enums";
 
 export default async function Page(props: {
   searchParams?: Promise<{
@@ -19,7 +26,7 @@ export default async function Page(props: {
   }>;
 }) {
   const searchParams = await props.searchParams;
-  const query = searchParams?.query || "";
+  const query = searchParams?.query || " ";
   const currentPage = Number(searchParams?.page) || 1;
   const totalPages = await fetchPostsPage(query);
   const headersList = await headers();
@@ -39,15 +46,13 @@ export default async function Page(props: {
   });
   const userPosts = await fetchPostPagination(query, currentPage);
   if (!userPosts) {
-    redirect("/");
+    redirect("/dashboard");
   }
-  const latestMusic = await threeLatestPost("music");
-    const latestIT = await threeLatestPost("informatic");
-    if (!latestMusic || !latestIT) {
-      return (
-        <span>Error fetching posts</span>
-      )
-    }
+  const latestMusic = await threeLatestPost(PostCategory.ENTERTAINMENT);
+  const latestIT = await threeLatestPost(PostCategory.TECHNOLOGY);
+  if (!latestMusic || !latestIT) {
+    return <span>Error fetching posts</span>;
+  }
 
   return (
     <>
@@ -58,24 +63,18 @@ export default async function Page(props: {
             <p className="text-center">Latest Music Post</p>
 
             {latestMusic.map((postM) => (
-              <div key={postM.id} className="grid-cols-3 grid">
+              <div key={postM.id} className="grid-cols-2 grid">
                 <span className="grid-cols-1">{postM.user.name} </span>
                 <span className="grid-cols-1">{postM.title} </span>
-                <span className="grid-cols-1">
-                  {postM.createdAt.toLocaleDateString()}{" "}
-                </span>
               </div>
             ))}
           </div>
           <div className="bg-muted/50 aspect-video rounded-xl">
             <p className="text-center">Latest Informatique Post</p>
             {latestIT.map((postM) => (
-              <div key={postM.id} className="grid-cols-3 grid">
+              <div key={postM.id} className="grid-cols-2 grid">
                 <span className="grid-cols-1">{postM.user.name} </span>
                 <span className="grid-cols-1">{postM.title} </span>
-                <span className="grid-cols-1">
-                  {postM.createdAt.toLocaleDateString()}{" "}
-                </span>
               </div>
             ))}
           </div>
@@ -99,24 +98,35 @@ export default async function Page(props: {
           <table className="table-auto min-w-full whitespace-nowrap">
             <thead>
               <tr className="border-b text-sm text-left">
-                <th className="p-2">ID</th>
+                <th className="p-2 hidden md:table-cell">ID</th>
                 <th className="p-2">Date Create</th>
                 <th className="p-2">Published</th>
                 <th className="p-2">Title</th>
-                <th className="p-2">Subject</th>
-                <th className="p-2">Content</th>
+                <th className="p-2 hidden md:table-cell">Subject</th>
+                <th className="p-2">Category</th>
+                <th className="p-2 hidden md:table-cell">Content</th>
                 <th className="p-2">Actions</th>
               </tr>
             </thead>
             <tbody>
               {userPosts.map((post) => (
                 <tr key={post.id} className="border-b text-sm text-left">
-                  <td className="p-2">{`${post.id.slice(0, 6)} ...`}</td>
+                  <td className="p-2 hidden md:table-cell">{`${post.id.slice(
+                    0,
+                    6
+                  )} ...`}</td>
                   <td className="p-2">{post.createdAt.toLocaleDateString()}</td>
                   <td className="p-2">{post.published ? "True" : "False"}</td>
                   <td className="p-2">{post.title}</td>
-                  <td className="p-2">{`${post.subject?.slice(0, 25)} ...`}</td>
-                  <td className="p-2">{`${post.content.slice(0, 60)} ...`}</td>
+                  <td className="p-2 hidden md:table-cell">{`${post.subject?.slice(
+                    0,
+                    20
+                  )} ...`}</td>
+                  <td className="p-2">{post.category}</td>
+                  <td className="p-2 hidden md:table-cell">{`${post.content.slice(
+                    0,
+                    50
+                  )} ...`}</td>
 
                   <td className="p-2 grid grid-cols-2">
                     <span className="p-2 grid-cols-1">

@@ -3,44 +3,26 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useActionState, useState } from "react";
+import { useActionState } from "react";
 import { createPost, State } from "@/actions/create-post-action";
-import { Editable, useEditor } from "@wysimark/react";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "../ui/textarea";
+import { PostCategory } from "@/lib/generated/prisma/enums";
 
 export default function CreatePostForm({ userId }: { userId: string }) {
-  const [markdown, setMarkdown] = useState<string>("**you can use markdown**");
-  const editor = useEditor({
-    authToken:
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkZobmtLbXd1Yk9BdDlBY2MifQ.eyJ0YWdzIjpbInRlc3QiLCJmb3IiLCJ3eXNpbWFyayIsImVkaXRvciJdLCJpYXQiOjE3NjI1NDM0MDIsImV4cCI6MTc2MzE0ODIwMn0.GzEruC1BfYJ5o-GfTLKTbdb2MSit0De_pYT5wmVOT0k",
-  });
   const initialState: State = { message: null, errors: {} };
-  const createPostWithBody = createPost.bind(null, markdown)
   const [state, formAction, isPending] = useActionState(
-    createPostWithBody,
+    createPost,
     initialState
   );
-  /* async function handleSubmit(evt: React.FormEvent<HTMLFormElement>) {
-    evt.preventDefault();
-    setIsPending(true);
-
-    const formData = new FormData(evt.target as HTMLFormElement);
-    const { error } = await createNewPost(formData);
-
-    if (error) {
-      toast.error(error);
-    } else {
-      toast.success("post created successfully");
-      (evt.target as HTMLFormElement).reset();
-    }
-
-    setIsPending(false);
-    
-    redirect("/posts");
-  } */
 
   return (
     <form action={formAction} className="max-w-sm w-full space-y-4">
+      {state.message && (
+        <div className="p-2 rounded-md bg-red-100 text-red-800 text-sm">
+          {state.message}
+        </div>
+      )}
       <Input type="hidden" name="userId" id="userId" value={userId} />
       <div className="space-y-2">
         <Label htmlFor="title">Title</Label>
@@ -53,13 +35,32 @@ export default function CreatePostForm({ userId }: { userId: string }) {
         <Input name="subject" id="subject" defaultValue={""} />
       </div>
       {state.errors?.subject && <p>{state.errors?.subject}</p>}
+
       <div className="space-y-2">
-        <Label htmlFor="editor">Content</Label>
-        <Editable
-          editor={editor}
-          value={markdown}
-          onChange={setMarkdown}
-          placeholder={"Contenu de votre article, **you can use markdown**"}
+        <Label htmlFor="category">Category</Label>
+        <select
+          name="category"
+          id="category"
+          aria-label="Category"
+          defaultValue={PostCategory.ALL}
+          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+        >
+          {Object.values(PostCategory).map((cat) => (
+            <option key={cat} value={cat}>
+              {cat.charAt(0) + cat.slice(1).toLowerCase()}
+            </option>
+          ))}
+        </select>
+      </div>
+      {state.errors?.category && <p>{state.errors?.category}</p>}
+
+      <div className="space-y-2">
+        <Label htmlFor="content">Content</Label>
+        <Textarea
+          id="content"
+          name="content"
+          defaultValue={"Enter your post content"}
+          rows={8}
         />
       </div>
       {state.errors?.content && <p>{state.errors?.content}</p>}

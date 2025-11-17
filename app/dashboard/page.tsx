@@ -1,11 +1,12 @@
 import { GetStartedButton } from "@/components/getstarted-button";
 import { HeaderBread } from "@/components/header-breadcrum";
 import { threeLatestPost } from "@/data/posts-data";
+import { PostCategory } from "@/lib/generated/prisma/enums";
 
 export default async function Page() {
 
-  const latestMusic = await threeLatestPost("music");
-  const latestIT = await threeLatestPost("informatic");
+  const latestMusic = await threeLatestPost(PostCategory.ENTERTAINMENT);
+  const latestIT = await threeLatestPost(PostCategory.TECHNOLOGY);
   if (!latestMusic || !latestIT) {
     return (
       <span>Error fetching posts</span>

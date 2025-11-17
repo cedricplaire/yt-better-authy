@@ -19,6 +19,14 @@ enum UserGenre {
   FEMALE
 }
 
+enum PostCategory {
+  TECHNOLOGY
+  ENTERTAINMENT
+  DEVELOPMENT
+  DESIGN
+  ALL
+}
+
 model Post {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
@@ -26,7 +34,7 @@ model Post {
 
   title   String
   subject   String?
-  category  String?
+  category  PostCategory? @default(ALL)
   content String
 
   published Boolean @default(false)

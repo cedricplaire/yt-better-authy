@@ -25,6 +25,8 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { authClient } from "@/lib/auth-client";
+
 
 // This is sample data.
 const data = {
@@ -154,11 +156,17 @@ const data = {
       icon: Map,
     },
   ],
-};
+}; 
 
-export function AppSidebar({
+export async function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
+    const { data: session } = authClient.useSession();
+    const user = {
+      name: session?.user.name || "User Name",
+      email: session?.user.email || "email@email.com",
+      avatar: session?.user.image || "/vercel.svg", 
+    }
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -169,7 +177,7 @@ export function AppSidebar({
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

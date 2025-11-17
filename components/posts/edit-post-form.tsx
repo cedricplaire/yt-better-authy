@@ -8,6 +8,7 @@ import { State, updatePost } from "@/actions/create-post-action";
 import { Prisma } from "@/lib/generated/prisma/client";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "../ui/textarea";
+import { PostCategory } from "@/lib/generated/prisma/enums";
 
 export default function UpdatePostForm({ post }: { post: Prisma.PostModel }) { 
   const initialState: State = { message: null, errors: {} };
@@ -16,7 +17,6 @@ export default function UpdatePostForm({ post }: { post: Prisma.PostModel }) {
     updatePostWithId,
     initialState
   );
-
 
   /*   async function handleSubmit(evt: React.FormEvent<HTMLFormElement>) {
       evt.preventDefault();
@@ -39,18 +39,43 @@ export default function UpdatePostForm({ post }: { post: Prisma.PostModel }) {
 
   return (
     <form action={formAction} className="w-full space-y-4">
+      {state.message && (
+        <div className="p-2 rounded-md bg-red-100 text-red-800 text-sm">
+          {state.message}
+        </div>
+      )}
       <Input type="hidden" name="userId" id="userId" value={post.userId} />
       <Input type="hidden" name="Id" id="Id" value={post.id} />
 
       <div className="space-y-2">
         <Label htmlFor="title">Title</Label>
-        <Input name="title" id="title" defaultValue={post.title} />
+        <Input name="title" id="title" defaultValue={post.title || "Title"} />
       </div>
+      {state.errors?.title && <p>{state.errors?.title}</p>}
 
       <div className="space-y-2">
         <Label htmlFor="subject">Subject</Label>
-        <Input name="subject" id="subject" defaultValue={post.subject || ""} />
+        <Input name="subject" id="subject" defaultValue={post.subject || "Subject"} />
       </div>
+      {state.errors?.subject && <p>{state.errors?.subject}</p>}
+
+      <div className="space-y-2">
+        <Label htmlFor="category">Category</Label>
+        <select
+          name="category"
+          id="category"
+          aria-label="Category"
+          defaultValue={post.category || PostCategory.ALL}
+          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+        >
+          {Object.values(PostCategory).map((cat) => (
+            <option key={cat} value={cat}>
+              {cat.charAt(0) + cat.slice(1).toLowerCase()}
+            </option>
+          ))}
+        </select>
+      </div>
+      {state.errors?.category && <p>{state.errors?.category}</p>}
 
       <div className="space-y-2">
         <Label htmlFor="content">Content</Label>

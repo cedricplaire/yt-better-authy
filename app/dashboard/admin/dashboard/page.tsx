@@ -42,7 +42,7 @@ export default async function Page() {
         sortBy: "name"
     }
   });
-  const sortedUsers = await users.sort((a, b) => {
+  const sortedUsers = users.sort((a, b) => {
     if (a.role === "ADMIN" && b.role !== "ADMIN") return -1;
     if (a.role !== "ADMIN" && b.role === "ADMIN") return 1;
     return 0;
@@ -77,16 +77,18 @@ export default async function Page() {
                   <td className="p-2">{user.name}</td>
                   <td className="p-2">{user.email}</td>
                   <td className="p-2 text-center">
-                    <UserRoleSelect role={user.role as UserRole} userId={user.id} />
+                    <UserRoleSelect
+                      role={user.role as UserRole}
+                      userId={user.id}
+                    />
                   </td>
                   <td className="px-4 py-2 text-center">
-                  {user.role === "USER" ? (
-                    <DeleteUserButton userId={user.id} />
-                  ) : (
-                    <PlaceholderDeleteUserButton />
-                  )}
-                </td>
-
+                    {user.role === "USER" ? (
+                      <DeleteUserButton userId={user.id} />
+                    ) : (
+                      <PlaceholderDeleteUserButton />
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>

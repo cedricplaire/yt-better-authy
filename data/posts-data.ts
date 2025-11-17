@@ -1,30 +1,45 @@
-import prisma from "@/lib/prisma";
+import { PostCategory } from "../lib/generated/prisma/enums";
+import prisma from "../lib/prisma";
+import { normalizeCategory } from "./category-utils";
 
 const ITEMS_PER_PAGE = 6;
 
-export async function threeLatestPost(categ: string) {
+export async function fetchCategories() {
+  try {
+    const categories = await prisma.post.findMany();
+    return categories;
+  } catch (error) {
+    console.error("Database Error :", error);
+    throw new Error(`Failed to fetch Categories names ...`);
+  }
+}
+
+
+
+export async function threeLatestPost(categ: string | PostCategory) {
+  const category = normalizeCategory(categ);
+
   try {
     const threeLatest = prisma.post.findMany({
-      relationLoadStrategy: "join", // or "query"
       where: {
-        category: categ,
+        category: category,
       },
       include: {
         user: {
           select: {
-            name: true
-          }
+            name: true,
+          },
         },
       },
       orderBy: {
-        createdAt: "asc"
+        createdAt: "asc",
       },
-      take: 3
+      take: 3,
     });
     return threeLatest;
   } catch (error) {
     console.error("Database Error :", error);
-    throw new Error(`Failed to fetch latest posts for : ${categ}`);
+    throw new Error(`Failed to fetch latest posts for : ${String(categ)}`);
   }
 }
 
@@ -45,7 +60,6 @@ export async function fetchPostById(id: string) {
 export async function PostByIdWithName(id: string) {
   try {
     const post = await prisma.post.findUnique({
-      relationLoadStrategy: "join", // or "query"
       where: {
         id,
       },
@@ -76,7 +90,6 @@ export async function fetchAllPosts() {
 export async function fetchAllMyPosts(userId: string) {
   try {
     const MyPosts = await prisma.post.findMany({
-      relationLoadStrategy: "join",
       where: {
         userId: userId,
       },
@@ -97,7 +110,6 @@ export async function fetchAllMyPosts(userId: string) {
 export async function fetchAllPostWithAuthor() {
   try {
     const posts = await prisma.post.findMany({
-      relationLoadStrategy: "join", // or "query"
       include: {
         user: {
           select: {
@@ -156,8 +168,16 @@ export async function fetchPostPagination(query: string, currentPage: number) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   try {
     const paginated = await prisma.post.findMany({
-      relationLoadStrategy: "join", // or "query"
-      include: {
+      select: {
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+        title: true,
+        subject: true,
+        category: true,
+        content: true,
+        published: true,
+        userId: true,
         user: {
           select: {
             role: true,
