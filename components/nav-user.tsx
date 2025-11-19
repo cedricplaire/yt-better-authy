@@ -1,12 +1,12 @@
 "use client"
 
 import {
-  BadgeCheck,
   Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
+  PenToolIcon,
   Sparkles,
+  UserCircle2Icon,
 } from "lucide-react"
 
 import {
@@ -28,7 +28,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
+import { signOut } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useState } from "react";
+import Link from "next/link";
 
 export function NavUser({
   user,
@@ -39,7 +44,28 @@ export function NavUser({
     avatar: string
   }
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile } = useSidebar();
+  const router = useRouter();
+  const [isPending, setIsPending] = useState(false);
+  async function LogOutClick() {
+      await signOut({
+        fetchOptions: {
+          onRequest: () => {
+            setIsPending(true);
+          },
+          onResponse: () => {
+            setIsPending(false);
+          },
+          onError: (ctx) => {
+            toast.error(ctx.error.message);
+          },
+          onSuccess: () => {
+            toast.success("SignOut successfully, See you soon !")
+            router.push("/dashboard/auth/login");
+          },
+        },
+      });
+    }
 
   return (
     <SidebarMenu>
@@ -81,34 +107,49 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
+              <DropdownMenuItem asChild={true}>
+              <Link className=" flex flex-row" href="/dashboard/profile">
+                <Sparkles className="mr-3 mt-1" />
+                Upgrade Permissions
+              </Link>  
+                
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
+              <DropdownMenuItem asChild={true}>
+                <Link className=" flex flex-row" href="/dashboard/profile">
+                  <UserCircle2Icon className="mr-3 mt-0.5" />
+                  Account
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
+              <DropdownMenuItem asChild={true}>
+                <Link
+                  className=" flex flex-row"
+                  href="/dashboard/posts/my-posts"
+                >
+                  <PenToolIcon className="mr-3 mt-1" />
+                  My Posts
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
+              <DropdownMenuItem asChild={true}>
+                <Link
+                  className=" flex flex-row"
+                  href="/dashboard/profile/notifications"
+                >
+                  <Bell className="mr-3 mt-1" />
+                  Notifications
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
-              Log out
+            <DropdownMenuItem onClick={LogOutClick} disabled={isPending}>
+              <LogOut className="mr-2 mt-1" />
+              Sign Out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

@@ -74,50 +74,50 @@ const data = {
       ],
     },
     {
-      title: "Models",
-      url: "#",
+      title: "Categories",
+      url: "/dashboard/posts",
       icon: Bot,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Entertainment",
+          url: "/dashboard/posts/entertainment",
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: "Technology",
+          url: "/dashboard/posts/technology",
         },
         {
-          title: "Quantum",
-          url: "#",
+          title: "Development",
+          url: "/dashboard/posts/Development",
         },
       ],
     },
     {
       title: "Documentation",
-      url: "#",
+      url: "/dashboard/docs",
       icon: BookOpen,
       items: [
         {
           title: "Introduction",
-          url: "#",
+          url: "/dashboard/docs/introduction",
         },
         {
           title: "Get Started",
-          url: "#",
+          url: "/dashboard/docs/getstarted",
         },
         {
           title: "Tutorials",
-          url: "#",
+          url: "/dashboard/docs/tutorials",
         },
         {
           title: "Changelog",
-          url: "#",
+          url: "/dashboard/docs/changelog",
         },
       ],
     },
     {
       title: "Settings",
-      url: "#",
+      url: "/dashboard/admin",
       icon: Settings2,
       items: [
         {
@@ -158,7 +158,7 @@ const data = {
   ],
 }; 
 
-export async function AppSidebar({
+export function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
     const { data: session } = authClient.useSession();

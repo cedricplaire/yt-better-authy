@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { LogOut } from "lucide-react";
 
 export const SignOutButton = () => {
   const [isPending, setIsPending] = useState(false);
@@ -32,7 +33,8 @@ export const SignOutButton = () => {
 
   return (
     <Button onClick={handleClick} size="sm" variant="destructive" disabled={isPending}>
-      Sign Out
+      <LogOut />
+        Sign Out
     </Button>
   );
 };

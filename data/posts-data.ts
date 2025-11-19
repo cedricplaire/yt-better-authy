@@ -39,7 +39,7 @@ export async function threeLatestPost(categ: string | PostCategory) {
     return threeLatest;
   } catch (error) {
     console.error("Database Error :", error);
-    throw new Error(`Failed to fetch latest posts for : ${String(categ)}`);
+    throw new Error(`Failed to fetch latest posts for : ${category}`);
   }
 }
 

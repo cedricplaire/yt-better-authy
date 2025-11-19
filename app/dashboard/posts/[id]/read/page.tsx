@@ -8,7 +8,6 @@ import {
 } from "@/components/posts/edit-post-button";
 import { PublishPostButton } from "@/components/posts/publish-post-button";
 import { ReturnButton } from "@/components/return-button";
-import { SignOutButton } from "@/components/sign-out-button";
 import { Button } from "@/components/ui/button";
 import { PostByIdWithName } from "@/data/posts-data";
 import { auth } from "@/lib/auth";
@@ -40,7 +39,7 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   }
 
   return (
-    <div className="px-8 py-16 container mx-auto max-w-sceen-lg space-y-8">
+    <div className="px-6 py-12 container mx-auto max-w-sceen-lg space-y-6">
       <div className="space-y-4">
         <ReturnButton href="/dashboard" label="Home" />
         <h1 className="text-3-xl font-bold">Profile</h1>
@@ -51,7 +50,6 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
               <Link href={"/dashboard/admin/dashboard"}>Admin Dashboard</Link>
             </Button>
           )}
-          <SignOutButton />
         </div>
       </div>
       <div className="flex flex-col rounded-md w-full p-4 space-y-4 gap-2">
@@ -93,19 +91,19 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
           <span className="absolute w-24 h-12 -ml-20 rounded-l-full -mt-3 text-center  items-center justify-items-center pl-3 pt-2.5 border-2 border-gray-400 bg-gray-800 text-gray-100">
             TITRE
           </span>
-          <span className="ml-6 flex flex-row indent-2">{post?.title}</span>
+          <p about="post title" className="ml-6 flex flex-row indent-2">{post?.title}</p>
         </div>
         <div className="items-center p-2 text-left bg-gray-100 text-gray-800">
           <span className="absolute w-24 h-12 -ml-20 rounded-l-full -mt-3 text-center items-center justify-items-center pl-3 pt-2.5 border-2 border-gray-400 bg-gray-800 text-gray-100">
             SUBJECT
           </span>
-          <span className="ml-6 flex flex-row indent-2">{post?.subject}</span>
+          <p about="post subject" className="ml-6 flex flex-row indent-2">{post?.subject}</p>
         </div>
         <div className="items-center p-2 text-left bg-gray-100 text-gray-800">
           <span className="absolute w-24 h-12 -ml-20 rounded-l-full -mt-3 text-center items-center justify-items-center pl-3 pt-2.5 border-2 border-gray-400 bg-gray-800 text-gray-100">
             CONTENT
           </span>
-          <span className="ml-6 flex flex-row indent-2">{post?.content}</span>
+          <p about="post content" className="ml-6 flex flex-row indent-2">{post?.content}</p>
         </div>
       </div>
     </div>

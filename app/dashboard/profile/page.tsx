@@ -30,7 +30,7 @@ export default async function Page() {
   return (
     <>
       <HeaderBread />
-      <div className="px-8 py-16 container mx-auto max-w-5xl space-y-8">
+      <div className="px-6 py-12 container mx-auto max-w-5xl space-y-6">
         <div className="space-y-4">
           <ReturnButton href="/dashboard" label="Home" />
           <h1 className="text-3xl font-bold">Profile</h1>

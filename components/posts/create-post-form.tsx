@@ -3,13 +3,19 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { createPost, State } from "@/actions/create-post-action";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "../ui/textarea";
-import { PostCategory } from "@/lib/generated/prisma/enums";
+//import { Textarea } from "../ui/textarea";
+import { PostCategSelect } from "./post-categ-select";
+import { Editable, useEditor } from "@wysimark/react";
 
 export default function CreatePostForm({ userId }: { userId: string }) {
+  const WYSITOKEN = "PRTV_FhnkKmwubOAt9Acc_rIjDsIST1K9evOrmzk8qkLUKsGwAdoX8";
+  const [markdown, setMarkdown] = useState<string>("");
+  const editor = useEditor({
+    authToken: WYSITOKEN,
+  });
   const initialState: State = { message: null, errors: {} };
   const [state, formAction, isPending] = useActionState(
     createPost,
@@ -37,31 +43,28 @@ export default function CreatePostForm({ userId }: { userId: string }) {
       {state.errors?.subject && <p>{state.errors?.subject}</p>}
 
       <div className="space-y-2">
-        <Label htmlFor="category">Category</Label>
-        <select
-          name="category"
-          id="category"
-          aria-label="Category"
-          defaultValue={PostCategory.ALL}
-          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-        >
-          {Object.values(PostCategory).map((cat) => (
-            <option key={cat} value={cat}>
-              {cat.charAt(0) + cat.slice(1).toLowerCase()}
-            </option>
-          ))}
-        </select>
+        <Label className="mb-0" htmlFor="category">
+          Category
+        </Label>
+        <PostCategSelect />
       </div>
       {state.errors?.category && <p>{state.errors?.category}</p>}
 
       <div className="space-y-2">
         <Label htmlFor="content">Content</Label>
-        <Textarea
+        <Editable
+          editor={editor}
+          value={markdown}
+          onChange={setMarkdown}
+          className="min-h-[220px] text-foreground border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 overflow-y-auto"
+        />
+
+        {/* <Textarea
           id="content"
           name="content"
           defaultValue={"Enter your post content"}
           rows={8}
-        />
+        /> */}
       </div>
       {state.errors?.content && <p>{state.errors?.content}</p>}
 
@@ -71,7 +74,7 @@ export default function CreatePostForm({ userId }: { userId: string }) {
             name="published"
             id="published"
             defaultValue={"off"}
-            className="data-[state=checked]:border-green-800 data-[state=checked]:bg-green-600 data-[state=unchecked]:border-gray-800 data-[state=unchecked]:bg-gray-400"
+            className=" data-[state=checked]:border-green-800 data-[state=checked]:bg-green-600 data-[state=unchecked]:border-gray-800 data-[state=unchecked]:bg-gray-400"
           />
           <Label
             htmlFor="published"

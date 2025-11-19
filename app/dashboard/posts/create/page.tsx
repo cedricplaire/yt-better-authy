@@ -1,3 +1,4 @@
+import { HeaderBread } from "@/components/header-breadcrum";
 import CreatePostForm from "@/components/posts/create-post-form";
 import { ReturnButton } from "@/components/return-button";
 import { auth } from "@/lib/auth";
@@ -13,12 +14,13 @@ export default async function Page() {
 
   const authorId = session.user.id;
   return (
-    <div className="px-8 py-16 container mx-auto max-w-5xl space-y-8">
-      <div className="space-y-4">
+    <div className="px-8 flex flex-1 flex-col gap-4 space-y-8">
+      <HeaderBread />
+      <div className=" flex flex-row space-x-4 space-y-4">
         <ReturnButton href="/dashboard/posts" label="Posts List" />
-        <h1 className="text-3-xl font-bold">Create New Post</h1>
       </div>
-      <div className="px-2 py-4 mx-auto space-y-6">
+      <div className="p-4 mx-auto space-y-6">
+        <h1 className="text-5xl font-bold">Create New Post</h1>
         <CreatePostForm userId={authorId} />
       </div>
     </div>

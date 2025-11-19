@@ -3,14 +3,19 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { State, updatePost } from "@/actions/create-post-action";
 import { Prisma } from "@/lib/generated/prisma/client";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "../ui/textarea";
-import { PostCategory } from "@/lib/generated/prisma/enums";
+import { Editable, useEditor } from "@wysimark/react";
+import { PostCategSelect } from "./post-categ-select";
 
 export default function UpdatePostForm({ post }: { post: Prisma.PostModel }) { 
+  const WYSITOKEN = "PRTV_FhnkKmwubOAt9Acc_rIjDsIST1K9evOrmzk8qkLUKsGwAdoX8";
+    const [markdown, setMarkdown] = useState<string>("");
+    const editor = useEditor({
+      authToken: WYSITOKEN,
+    });
   const initialState: State = { message: null, errors: {} };
   const updatePostWithId = updatePost.bind(null, post.id);
   const [state, formAction, isPending] = useActionState(
@@ -18,29 +23,10 @@ export default function UpdatePostForm({ post }: { post: Prisma.PostModel }) {
     initialState
   );
 
-  /*   async function handleSubmit(evt: React.FormEvent<HTMLFormElement>) {
-      evt.preventDefault();
-      setIsPending(true);
-  
-      const formData = new FormData(evt.target as HTMLFormElement);
-      const { error } = await updateNewPost(formData);
-  
-      if (error) {
-        toast.error(error);
-      } else {
-        toast.success("post created successfully");
-        (evt.target as HTMLFormElement).reset();
-      }
-  
-      setIsPending(false);
-      
-      redirect("/posts");
-    } */
-
   return (
     <form action={formAction} className="w-full space-y-4">
       {state.message && (
-        <div className="p-2 rounded-md bg-red-100 text-red-800 text-sm">
+        <div className="p-2 rounded-md bg-red-100 text-red-600 text-sm">
           {state.message}
         </div>
       )}
@@ -61,29 +47,17 @@ export default function UpdatePostForm({ post }: { post: Prisma.PostModel }) {
 
       <div className="space-y-2">
         <Label htmlFor="category">Category</Label>
-        <select
-          name="category"
-          id="category"
-          aria-label="Category"
-          defaultValue={post.category || PostCategory.ALL}
-          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-        >
-          {Object.values(PostCategory).map((cat) => (
-            <option key={cat} value={cat}>
-              {cat.charAt(0) + cat.slice(1).toLowerCase()}
-            </option>
-          ))}
-        </select>
+        <PostCategSelect />
       </div>
       {state.errors?.category && <p>{state.errors?.category}</p>}
 
       <div className="space-y-2">
         <Label htmlFor="content">Content</Label>
-        <Textarea
-          id="content"
-          name="content"
-          defaultValue={post.content}
-          rows={8}
+        <Editable
+          editor={editor}
+          value={markdown}
+          onChange={setMarkdown}
+          className="min-h-[220px] text-foreground border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 overflow-y-auto"
         />
       </div>
 
