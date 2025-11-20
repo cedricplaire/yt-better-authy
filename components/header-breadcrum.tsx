@@ -17,6 +17,7 @@ import { usePathname } from 'next/navigation';
 export const HeaderBread = () => {
   const paths = usePathname();
   const pathNames = paths.split("/").filter((path) => path);
+  const pattern = /^[a-f\d]{8}(-[a-f\d]{4}){3}-[a-f\d]{12}$/i;
 
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
@@ -30,7 +31,7 @@ export const HeaderBread = () => {
           <BreadcrumbList>      
             {pathNames.map((link, index) => {
               const href = `/${pathNames.slice(0, index + 1).join("/")}`;
-              if (index !== pathNames.length - 1) {
+              if (index !== pathNames.length - 1 && !pattern.test(pathNames[index])) {
                 return (
                   <div key={index} className="flex items-center">
                     <BreadcrumbItem

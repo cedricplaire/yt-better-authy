@@ -41,11 +41,11 @@ export default async function Page() {
     redirect("/dashboard/posts");
   }
   return (
-    <>
-      <div className="flex flex-1 flex-col max-h-screen gap-4 p-4 pt-0">
+      <div className="flex flex-1 flex-col h-auto gap-4 p-4 pt-0">
       <HeaderBread />
-        <div className="bg-muted/50 min-h-1/3 aspect-video rounded-xl p-1"></div>
-        <div className="bg-muted/50 min-h-2/3 p-2 pt-4 flex-1 rounded-xl overflow-y-scroll">
+        <div className="bg-muted/50 max-h-1/5 aspect-video rounded-xl p-2"></div>
+
+        <div className="bg-muted/50 max-h-1/3 h-fit p-2 pt-4 flex-1 rounded-xl overflow-y-scroll">
           <p className="text-center font-bold text-3xl">Your Posts</p>
           {myPosts.map((post) => (
             <Item key={post.id} variant="outline">
@@ -107,6 +107,5 @@ export default async function Page() {
           ))}
         </div>
       </div>
-    </>
   );
 }

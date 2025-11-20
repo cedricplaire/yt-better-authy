@@ -30,7 +30,7 @@ export const PublishPostButton = ({ postId }: PublishPostButtonProps) => {
         <Button
           size="icon"
           variant={"outline"}
-          className="size-8 rounded-md border-2 border-gray-600"
+          className="size-8 rounded-md border-2 border-gray-600 hover:cursor-pointer"
           disabled={isPending}
           onClick={handleClick}
         >
@@ -47,11 +47,11 @@ export const PlaceHolderPublishPostButton = () => {
   return (
     <Button
       size="icon"
-      variant={"destructive"}
-      className="size-7 rounded-md"
+      variant={"ghost"}
+      className="size-8 rounded-md hover:cursor-pointe"
       disabled
     >
-      <span className="sr-only">Publish Post</span>
+      <span className="sr-only">Published</span>
       <SendIcon />
     </Button>
   );

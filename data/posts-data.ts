@@ -14,7 +14,19 @@ export async function fetchCategories() {
   }
 }
 
-
+export async function CountUserPosts(userId: string) {
+  try {
+    const count = await prisma.post.count({
+      where: {
+        userId: userId,
+      },
+    });
+    return count;
+  } catch (error) {
+    console.error("Database Error :", error);
+    throw new Error(`Failed to count posts for user with ID : ${userId}`);
+  }
+}
 
 export async function threeLatestPost(categ: string | PostCategory) {
   const category = normalizeCategory(categ);

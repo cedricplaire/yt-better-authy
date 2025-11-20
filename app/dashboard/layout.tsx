@@ -6,13 +6,18 @@ import {
 
 export default function Layout({
   children,
+  modal,
 }: Readonly<{
   children: React.ReactNode;
+  modal: React.ReactNode;
 }>) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset>{children}</SidebarInset>
+      <SidebarInset>
+        {modal}
+        {children}
+      </SidebarInset>
     </SidebarProvider>
   );
 }

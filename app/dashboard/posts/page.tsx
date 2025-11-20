@@ -4,7 +4,6 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ReturnButton } from "@/components/return-button";
 import Link from "next/link";
 import {
   fetchPostPagination,
@@ -18,6 +17,7 @@ import {
   PlaceHolderEditPostButton,
 } from "@/components/posts/edit-post-button";
 import { PostCategory } from "@/lib/generated/prisma/enums";
+import { PreviewPostButton } from "@/components/posts/preview-post-button";
 
 export default async function Page(props: {
   searchParams?: Promise<{
@@ -79,22 +79,20 @@ export default async function Page(props: {
             ))}
           </div>
           <div className="bg-muted/50 aspect-video rounded-xl">
-            <p className="text-center">Informations News</p>
+            <div className="space-y-4">
+              <h1 className="text-3-xl font-bold">Posts Actions</h1>
+              <Button title="create-post" className="w-full px-3 py-2">
+                <Link
+                  className="w-full h-full"
+                  href={"/dashboard/posts/create"}
+                >
+                  Create Post
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
         <div className="bg-muted/50 min-h-screen text-center justify-center p-2 pt-4 flex-1 rounded-xl md:min-h-min">
-          <div className="space-y-4">
-            <ReturnButton href="/dashboard/profile" label="Profile" />
-            <h1 className="text-3-xl font-bold">All Your Posts</h1>
-            <p className="p-2 rounded-md text-lg bg-green-600 text-white font-bold">
-              Access Granted
-            </p>
-            <Button title="create-post" className="w-full px-3 py-2">
-              <Link className="w-full h-full" href={"/dashboard/posts/create"}>
-                Create Post
-              </Link>
-            </Button>
-          </div>
           <table className="table-auto min-w-full whitespace-nowrap">
             <thead>
               <tr className="border-b text-sm text-left">
@@ -128,7 +126,10 @@ export default async function Page(props: {
                     50
                   )} ...`}</td>
 
-                  <td className="p-2 grid grid-cols-2">
+                  <td className="p-2 grid grid-cols-3 gap-2">
+                    <span className="p-2 grid-cols-1">
+                      <PreviewPostButton postId={post.id} />
+                    </span>
                     <span className="p-2 grid-cols-1">
                       <ReadPostButton postId={post.id} />
                     </span>
