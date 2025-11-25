@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { PostCategory } from "@/lib/generated/prisma/enums";
+import { PrismaClientInitializationError } from "@/lib/generated/prisma/internal/prismaNamespace";
 
 const FormSchema = z.object({
   id: z.string(),
@@ -193,12 +194,15 @@ export async function updatePost(
       },
     });
   } catch (error) {
+    if (error instanceof PrismaClientInitializationError) {
+      return { success: false, error: error.message };
+    }
     console.error(error);
     return {
       message: "Database Error: Failed to Update Post.",
     };
   }
 
-  //revalidatePath(`/dashboard/posts/${id}/edit`);
+  //revalidatePath(`/dashboard/posts/${id}`);
   redirect("/dashboard/posts");
 }

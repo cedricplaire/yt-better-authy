@@ -77,7 +77,7 @@ export default function UpdatePostForm({ post }: { post: Prisma.PostModel }) {
               Published ?
             </Label>
           </div>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-gray-400">
             Uncheck to create a draft and modify later.
           </span>
         </div>
@@ -85,7 +85,7 @@ export default function UpdatePostForm({ post }: { post: Prisma.PostModel }) {
           <span className="overflow-hidden p-1 text-left">
             When you publish your post, everybody can see it. if you don&apos;t
             want this, uncheck publish switch and come back later to modify your
-            post and maybe publish it if you are ready
+            post draft and maybe publish it if you are ready
           </span>
         </div>
       </div>

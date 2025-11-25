@@ -48,8 +48,8 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   return (
     <div className="px-8 py-16 container mx-auto max-w-sceen-lg space-y-8">
       <div className="space-y-4">
-        <ReturnButton href="/dashboard/posts" label="posts" />
-        <h1 className="text-3-xl font-bold">Edit Post</h1>
+        <ReturnButton href="/dashboard/posts" label="Posts" />
+        <h1 className="text-3-xl font-bold">Edit Post: {post.title} </h1>
         <p className="p-2 rounded-md text-lg bg-green-600 text-white font-bold">
           Access Granted
         </p>

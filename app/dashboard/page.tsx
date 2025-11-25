@@ -32,7 +32,7 @@ export default async function Page() {
           <div className="bg-muted/50 aspect-video rounded-xl">
             <p className="text-center">Latest Informatique Posts</p>
             {latestIT.map((postIT) => (
-              <div key={postIT.id} className="flax-row">
+              <div key={postIT.id} className="flex-row">
                 <span className="w-1/4 after:content-['_:']">
                   {postIT.user.name}{" "}
                 </span>
@@ -43,7 +43,7 @@ export default async function Page() {
           <div className="bg-muted/50 aspect-video rounded-xl">
             <p className="text-center">Latest Dev Posts</p>
             {latestDEV.map((postDEV) => (
-              <div key={postDEV.id} className="flax-row">
+              <div key={postDEV.id} className="flex-row">
                 <span className="w-1/4 after:content-['_:']">
                   {postDEV.user.name}{" "}
                 </span>

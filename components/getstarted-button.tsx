@@ -19,7 +19,7 @@ export const GetStartedButton = () => {
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <Button variant={"outline"} size="lg" asChild>
+      <Button variant="outline" size="lg" asChild>
         <Link href={href}>Get Started</Link>
       </Button>
 
